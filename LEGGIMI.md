@@ -1,26 +1,18 @@
-# ORTO Hub Integrato — TEST v2 (sola lettura)
+# ORTO Hub Integrato TEST v3 — accesso Google semplificato
 
-## Scopo
-Leggere le attività reali del foglio Google condiviso, **senza scrivere alcun dato**. La navigazione interna rimane quella del TEST v1. Non sostituisce la To-do originale.
+## Cambiamento rispetto alla v2
+Il codice non usa più `prompt: 'consent'` a ogni collegamento. Usa `prompt: ''`, che riutilizza il consenso Google già concesso quando possibile. La lettura resta identica e non c’è nessuna scrittura nel foglio. In caso di sessione scaduta (HTTP 401) compare un invito a ricollegarsi.
 
-## Prima di pubblicare
-1. **Google Cloud Console**: crea/seleziona un progetto di prova; abilita **Google Sheets API**.
-2. Configura la schermata consenso OAuth (Google Auth Platform): modalità test, aggiungi le email degli utenti di prova necessarie; imposta il nome dell'app. Lo scope usato è `spreadsheets.readonly` (sensibile) e `userinfo.email`. Google può richiedere approvazione/verifica prima dell'uso pubblico.
-3. Crea un **ID client OAuth** di tipo *Applicazione web*, origine JavaScript autorizzata esattamente `https://alessiocb98.github.io` (senza percorso). Non creare un client secret nel frontend.
-4. Recupera l'ID del **foglio To-do**: dal link del Google Sheets chiamato `THE DREAM p.g.a. - To-Do | Archivio`, la stringa tra `/d/` e `/edit`. **Non usare l'ID del progetto Apps Script.**
-5. Apri `config.js`: sostituisci **solo** `INCOLLA_CLIENT_ID_OAUTH_WEB` e `INCOLLA_ID_ARCHIVIO_TODO`. Non incollare token, password, chiavi private o client secret. Questi due identificatori compariranno nel codice pubblico, perciò non sono segreti.
-6. L'archivio Google Sheets deve rimanere **Privato/Ristretto**; concedi l'accesso soltanto agli account Google dei soci autorizzati. L'accesso con il proprio Google account e l'appartenenza attiva alla scheda `Soci` vengono verificati prima di mostrare le attività.
+## Cosa aspettarsi su iPhone
+Chiudendo completamente la WebApp il token temporaneo è perso. **Potrebbe ancora essere necessario toccare “Accedi / Ricollega Google” ogni volta**; però Google non dovrebbe richiedere di nuovo il consenso completo quando le condizioni consentono di riutilizzarlo. Un popup breve potrebbe essere visibile. Per un accesso davvero persistente in futuro servirà riprogettare la gestione della sessione.
 
-## Pubblicazione
-Nel repository **`ORTO-Hub-Integrato-TEST`**, sostituisci i file del test v1 con questi file. Mantieni GitHub Pages sul branch `main`, cartella `/(root)`. **Non toccare `ORTO-Hub`.** Aggiorna l'app su iPhone.
+## Aggiornamento
+Nel solo repository `ORTO-Hub-Integrato-TEST`, carica i file della v3 nella radice, sovrascrivendo quelli con lo stesso nome. Non cancellare `ORTO-Hub` definitivo e non modificare gli Apps Script originali. Attendi il deploy GitHub Pages e riapri l'icona TEST.
 
 ## Prova
-Apri Hub TEST → To-do list → Collega account Google. Concedi il consenso. Dovrebbero comparire le attività reali e i filtri. Il pulsante Aggiorna ripete la lettura; Disconnetti elimina il token dalla memoria della pagina. Se compaiono errori HTTP 403 verifica l'accesso al foglio, l'attivazione dell'API o la configurazione OAuth. Su iPhone la finestra di consenso Google potrebbe aprire un'interfaccia esterna temporanea; il requisito da verificare è il ritorno a Hub senza aprire Safari durante la navigazione normale.
+1. Apri TEST → To-do → “Accedi / Ricollega Google”, verifica le attività.
+2. Chiudi completamente la WebApp e riaprila. Tocca nuovamente il pulsante e controlla se il consenso completo è evitato.
+3. Verifica che le barre Safari non compaiano nella navigazione normale.
 
-## Limitazioni e sicurezza
-- Questo test contiene **solo lettura**: NON sono presenti chiamate di scrittura.
-- I Google Sheets rimangono protetti dai permessi Google Drive; la verifica della scheda Soci viene fatta nel client e non deve essere considerata sufficiente come sistema di autorizzazione per future scritture.
-- Lo scope `spreadsheets.readonly` autorizza la lettura dei fogli accessibili all'utente, non soltanto del foglio To-do. Questo andrà valutato prima dell'uso definitivo; la richiesta di consenso descrive questa ampiezza.
-- Il token OAuth è mantenuto **solo in memoria** e non in localStorage o nel repository.
-- Le funzioni originali `google.script.run` non sono utilizzabili direttamente da GitHub Pages; la futura modalità di scrittura richiederà una progettazione server-side sicura con autorizzazioni.
-- Il codice client è stato controllato staticamente; l'accesso Google e la lettura reale devono ancora essere provati sul dispositivo e sull'account.
+## Sicurezza
+Google Sheets resta ristretto; nessuna modifica agli accessi. Il token OAuth resta solo in memoria, mai in `localStorage`. L’ID client e l’ID del foglio sono pubblici e già configurati, nessun client secret nel codice. Il controllo sulla scheda Soci è fatto nel browser e non è adatto ad autorizzare scritture future.
