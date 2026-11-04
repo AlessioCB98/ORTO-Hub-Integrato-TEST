@@ -1,0 +1,17 @@
+{
+  "name": "ORTO Hub Integrato TEST",
+  "short_name": "ORTO Hub TEST",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101914",
+  "theme_color": "#101914",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
